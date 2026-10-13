@@ -353,7 +353,7 @@ def format_grounded_answer(question: str, chunks: list[dict], language: str) -> 
     # Deterministic synthesis if LLM provider not reachable or not configured
     if language == "ta":
         bullet_points = "\n\n".join(
-            f"• {c['title']} ({c['doc_title']}, பக்கம் {c.get('page_number', 'N/A')}):\n{c['excerpt']}"
+            f"- {c['title']} ({c['doc_title']}, பக்கம் {c.get('page_number', 'N/A')}):\n{c['excerpt']}"
             for c in chunks
         )
         answer = (
@@ -362,7 +362,7 @@ def format_grounded_answer(question: str, chunks: list[dict], language: str) -> 
         )
     else:
         bullet_points = "\n\n".join(
-            f"• {c['title']} ({c['doc_title']}, Page {c.get('page_number', 'N/A')}):\n{c['excerpt']}"
+            f"- {c['title']} ({c['doc_title']}, Page {c.get('page_number', 'N/A')}):\n{c['excerpt']}"
             for c in chunks
         )
         answer = (

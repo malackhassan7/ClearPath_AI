@@ -127,14 +127,15 @@ Until a rule_key+activity has a VERIFIED rule with a VERIFIED source version:
 - get_required_documents returns items marked needs_verification
 - Chatbot returns empty sources array; never cites fees or thresholds
 
-## Remaining defects
+## Remaining defects and limitations
 
 | ID | Description |
 |---|---|
 | CP-003 | canonical_url and retrieved_at are unknown for local reference PDFs; human review needed before VERIFIED state is reachable. |
-| CP-004 | No VERIFIED rules exist yet; rule engine returns 503 for all capacity/fee/tier queries. Intentional (fail-closed). |
+| CP-004 | No VERIFIED rules exist yet in production DB; rule engine returns 503 and chatbot emits fail-closed disclaimers with empty sources by design. |
 | CP-002 | Document validation still uses file-extension and name checks only. |
 | CP-008 | (RESOLVED) Chatbot is connected to `search_verified_registry` and strictly grounded on verified source versions and rules in the registry. It fails closed when unreviewed/draft rules exist and never emits unreviewed fees or thresholds. |
+| CP-009 | LLM API keys (GROQ_API_KEY, GEMINI_API_KEY) are optional environment variables; when absent or unconfigured, chatbot uses deterministic citation synthesis from verified excerpts. |
 
 ## Manual verification steps
 
@@ -149,3 +150,5 @@ Until a rule_key+activity has a VERIFIED rule with a VERIFIED source version:
 9. Run python backend/scripts/import_reference_sources.py twice; confirm no new versions on second run.
 10. Navigate to /admin/sources in the frontend; confirm SourcesPage shows imported PDFs with state badges.
 11. Navigate to /admin/rules; confirm RulesPage shows all 9 draft rules, filterable by activity.
+12. POST /api/v1/chatbot/chat with unverified rules: confirm 200 OK with sources=[], no unverified fees emitted, and explicit review notice.
+13. Run verified registry verification script: confirm verified rules emit exact citations (document_title, page_number, source_url, source_org) and quote verified excerpt with deterministic engine boundary disclaimer.
