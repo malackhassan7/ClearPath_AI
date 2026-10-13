@@ -80,7 +80,7 @@ remain distinct and gated independently.
 ### Execution Commands:
 ```powershell
 # 1. Backend tests with real PostgreSQL test database:
-$env:TEST_DATABASE_URL="postgresql://<user>:<password>@127.0.0.1:5433/<test_db_ending_in_test>"
+$env:TEST_DATABASE_URL="postgresql://clearpathai:<password>@127.0.0.1:5433/clearpathai_test"
 ..\.venv-backend\Scripts\python.exe -m pytest tests
 
 # 2. Frontend unit and process tests:

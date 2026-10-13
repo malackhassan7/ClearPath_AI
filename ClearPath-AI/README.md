@@ -99,7 +99,7 @@ npm test
 npx tsc --noEmit
 
 # 3. Backend integration tests with PostgreSQL (97 passing)
-$env:TEST_DATABASE_URL="postgresql://<user>:<password>@127.0.0.1:5433/<test_db_ending_in_test>"
+$env:TEST_DATABASE_URL="postgresql://clearpathai:<password>@127.0.0.1:5433/clearpathai_test"
 ..\.venv-backend\Scripts\python.exe -m pytest backend/tests
 ```
 
