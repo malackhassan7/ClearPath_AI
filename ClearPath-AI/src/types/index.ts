@@ -411,3 +411,39 @@ export interface CreateApplicationArgs {
   applicationType: string;
   licenseTier: string;
 }
+
+export interface RuleEvaluationItem {
+  rule_id: string;
+  activity: string;
+  applicability: string;
+  reason: string;
+  source_title?: string | null;
+  source_version_id?: string | null;
+  page_start?: number | null;
+  page_end?: number | null;
+  excerpt?: string | null;
+}
+
+export interface DocumentRequirementItem {
+  document_code: string;
+  title: string;
+  is_mandatory: boolean;
+  statutory_purpose: string;
+  source_rule_key?: string | null;
+  source_pages?: string | null;
+  review_status: string;
+}
+
+export interface ProjectComplianceReport {
+  project_id?: string | null;
+  project_name?: string | null;
+  evaluation_status: string;
+  is_authoritative: boolean;
+  suggested_fssai_tier?: string | null;
+  tier_explanation: string;
+  applicable_activities: string[];
+  matched_rules: RuleEvaluationItem[];
+  excluded_rules: RuleEvaluationItem[];
+  required_documents: DocumentRequirementItem[];
+  evaluated_at: string;
+}

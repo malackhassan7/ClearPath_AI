@@ -7,6 +7,7 @@ import {
   Activity,
   AlertCircle,
   ArrowRight,
+  BookOpen,
   BriefcaseBusiness,
   ChartNoAxesCombined,
   CheckCircle2,
@@ -16,7 +17,9 @@ import {
   Files,
   FileText,
   GitBranch,
+  Lock,
   MapPin,
+  ShieldAlert,
   ShieldCheck,
   Upload,
   Users,
@@ -26,6 +29,7 @@ import { money } from "@/lib/format";
 import type { Clearance, DocumentRecord, Project } from "@/types";
 import { STATUTORY_TEMPLATES, type StatutoryTemplate } from "@/data/statutoryTemplates";
 import { TemplateModal } from "@/components/ui/TemplateModal";
+import { useProjectCompliance } from "@/api/hooks";
 
 export function ProjectDetail({
   projects,
@@ -37,6 +41,11 @@ export function ProjectDetail({
   const p = projects.find((x: Project) => x.id === projectId) || projects[0];
   const cs = clearances.filter((c: Clearance) => c.projectId === p.id);
   const ds = documents.filter((d: DocumentRecord) => d.projectId === p.id);
+
+  const isDemo = p.sourceFlag === "Demo data" || p.id.startsWith("prj-");
+  const { data: liveCompliance, isLoading: complianceLoading } = useProjectCompliance(
+    isDemo ? "" : p.id,
+  );
 
   const capacity = p.capacity_lpd !== undefined && p.capacity_lpd !== null ? p.capacity_lpd : null;
   const turnoverLakhs = p.annual_turnover !== undefined && p.annual_turnover !== null ? p.annual_turnover / 100000 : null;
@@ -246,16 +255,55 @@ export function ProjectDetail({
       </div>
 
       <section className="panel" style={{ marginTop: "24px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
           <div>
-            <div className="eyebrow" style={{ color: "var(--teal-primary)" }}>MANDATORY STATUTORY CHECKLIST & TEMPLATES</div>
-            <h2 style={{ fontSize: "18px", margin: "4px 0" }}>Statutory Compliance for {p.name}</h2>
-            <div style={{ display: "inline-block", background: "#fef3c7", color: "#92400e", fontSize: "12px", fontWeight: 700, padding: "2px 8px", borderRadius: "4px", margin: "4px 0 8px 0" }}>
-              DEMO REFERENCE ESTIMATE · REGULATORY REVIEW PENDING
+            <div className="eyebrow" style={{ color: "var(--teal-primary)" }}>
+              {isDemo ? "DEMO PROTOTYPE CHECKLIST" : "PHASE 3 DETERMINISTIC REGULATORY EVALUATION"}
             </div>
-            <p style={{ color: "#666", fontSize: "14px", margin: 0 }}>
-              Calculated Tier: <b>{fssaiTier}</b> {capacity !== null ? `(Capacity: ${capacity.toLocaleString()} LPD)` : "(Capacity not specified)"}.
-              {" "}All official reference rules in the Source Registry are in <code>NEEDS_REVIEW</code> status; this reference estimate is for prototype demonstration and does not constitute statutory legal approval.
+            <h2 style={{ fontSize: "18px", margin: "4px 0" }}>
+              Regulatory Grounding & Clearance Evaluation: {p.name}
+            </h2>
+            <div style={{ display: "flex", gap: "8px", alignItems: "center", margin: "6px 0", flexWrap: "wrap" }}>
+              <span
+                style={{
+                  background: isDemo ? "#fef3c7" : "#e0e7ff",
+                  color: isDemo ? "#92400e" : "#3730a3",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  padding: "3px 10px",
+                  borderRadius: "4px",
+                }}
+              >
+                {isDemo ? "DEMO FIXTURE · NOT PERSISTED" : "HOST POSTGRESQL · PERSISTED WORKFLOW"}
+              </span>
+              <span
+                style={{
+                  background: "#fee2e2",
+                  color: "#991b1b",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  padding: "3px 10px",
+                  borderRadius: "4px",
+                }}
+              >
+                {liveCompliance?.evaluation_status || "PENDING_REGULATORY_REVIEW"}
+              </span>
+              <span
+                style={{
+                  background: "#f1f5f9",
+                  color: "#475569",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                  padding: "3px 10px",
+                  borderRadius: "4px",
+                }}
+              >
+                AUTHORITATIVE: {liveCompliance?.is_authoritative ? "YES" : "NO (FAIL-CLOSED)"}
+              </span>
+            </div>
+            <p style={{ color: "#475569", fontSize: "14px", margin: "8px 0 0", maxWidth: "800px", lineHeight: "1.5" }}>
+              {liveCompliance?.tier_explanation ||
+                "Candidate regulatory rules in the Source Registry remain in DRAFT status pending formal officer verification. In accordance with statutory fail-closed standards, official legal licensing decisions cannot be fabricated."}
             </p>
           </div>
           <Link to={`/projects/${p.id}/documents`} className="btn primary">
@@ -263,70 +311,178 @@ export function ProjectDetail({
           </Link>
         </div>
 
-        <div style={{ display: "grid", gap: "12px" }}>
-          {STATUTORY_TEMPLATES.map((tmpl) => {
-            const uploaded = ds.find((d) => d.documentName?.toLowerCase().includes(tmpl.templateKey.replace("template_", "").replace("_", " ")));
-            return (
-              <div
-                key={tmpl.templateKey}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "14px 16px",
-                  borderRadius: "8px",
-                  border: "1px solid #e2e8f0",
-                  background: uploaded ? "#f8fafc" : "#ffffff",
-                }}
-              >
-                <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+        {/* Live Evaluated Grounding from PostgreSQL Registry */}
+        {liveCompliance && liveCompliance.matched_rules && liveCompliance.matched_rules.length > 0 && (
+          <div style={{ marginTop: "16px", marginBottom: "20px" }}>
+            <h3 style={{ fontSize: "14px", fontWeight: 700, color: "#1e293b", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <BookOpen size={16} /> Matched Candidate Rules from Source Registry (Citations Grounded)
+            </h3>
+            <div style={{ display: "grid", gap: "10px" }}>
+              {liveCompliance.matched_rules.map((rule) => (
+                <div
+                  key={rule.rule_id}
+                  style={{
+                    padding: "12px 14px",
+                    borderRadius: "6px",
+                    border: "1px solid #cbd5e1",
+                    background: "#f8fafc",
+                    fontSize: "13px",
+                  }}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "4px" }}>
+                    <span style={{ fontWeight: 700, color: "#0f172a" }}>
+                      Activity: {rule.activity.toUpperCase()} · Status: <span style={{ color: "#d97706" }}>{rule.applicability}</span>
+                    </span>
+                    <span style={{ fontSize: "11px", color: "#64748b" }}>
+                      Source: {rule.source_title ?? "Statutory Gazette"} (Pages {rule.page_start}–{rule.page_end})
+                    </span>
+                  </div>
+                  <p style={{ margin: "4px 0", color: "#334155", fontStyle: "italic" }}>
+                    "{rule.excerpt}"
+                  </p>
+                  <small style={{ color: "#64748b" }}>Evaluation logic: {rule.reason}</small>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Required Documents derived from Live Compliance Engine */}
+        {liveCompliance && liveCompliance.required_documents && liveCompliance.required_documents.length > 0 ? (
+          <div>
+            <h3 style={{ fontSize: "14px", fontWeight: 700, color: "#1e293b", marginBottom: "8px", display: "flex", alignItems: "center", gap: "6px" }}>
+              <ClipboardCheck size={16} /> Mandatory Statutory Document Checklist
+            </h3>
+            <div style={{ display: "grid", gap: "12px" }}>
+              {liveCompliance.required_documents.map((doc) => {
+                const uploaded = ds.find((d) => d.documentName?.toLowerCase().includes(doc.title.toLowerCase()));
+                return (
                   <div
+                    key={doc.document_code}
                     style={{
-                      marginTop: "2px",
-                      padding: "8px",
-                      borderRadius: "6px",
-                      background: uploaded ? "rgba(45,106,79,0.1)" : "rgba(100,116,139,0.1)",
-                      color: uploaded ? "#2d6a4f" : "#64748b",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "14px 16px",
+                      borderRadius: "8px",
+                      border: "1px solid #e2e8f0",
+                      background: uploaded ? "#f8fafc" : "#ffffff",
                     }}
                   >
-                    <FileText size={18} />
-                  </div>
-                  <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                      <b style={{ fontSize: "14px", color: "#1e293b" }}>{tmpl.title}</b>
-                      <span
+                    <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                      <div
                         style={{
-                          fontSize: "11px",
-                          fontWeight: 600,
-                          padding: "2px 8px",
-                          borderRadius: "12px",
-                          background: uploaded ? "#dcfce7" : "#fee2e2",
-                          color: uploaded ? "#15803d" : "#b91c1c",
+                          marginTop: "2px",
+                          padding: "8px",
+                          borderRadius: "6px",
+                          background: uploaded ? "rgba(45,106,79,0.1)" : "rgba(100,116,139,0.1)",
+                          color: uploaded ? "#2d6a4f" : "#64748b",
                         }}
                       >
-                        {uploaded ? "Uploaded & Recorded" : "Pending Upload"}
-                      </span>
+                        <FileText size={18} />
+                      </div>
+                      <div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                          <b style={{ fontSize: "14px", color: "#1e293b" }}>{doc.title}</b>
+                          <span
+                            style={{
+                              fontSize: "11px",
+                              fontWeight: 600,
+                              padding: "2px 8px",
+                              borderRadius: "12px",
+                              background: uploaded ? "#dcfce7" : "#fee2e2",
+                              color: uploaded ? "#15803d" : "#b91c1c",
+                            }}
+                          >
+                            {uploaded ? "Uploaded & Recorded" : doc.review_status}
+                          </span>
+                          {doc.is_mandatory && (
+                            <span style={{ fontSize: "10px", fontWeight: 700, color: "#b91c1c", border: "1px solid #fca5a5", borderRadius: "4px", padding: "1px 4px" }}>
+                              STATUTORY MANDATORY
+                            </span>
+                          )}
+                        </div>
+                        <p style={{ margin: "3px 0 0", fontSize: "12px", color: "#475569" }}>
+                          {doc.statutory_purpose}
+                        </p>
+                        {doc.source_rule_key && (
+                          <small style={{ color: "#94a3b8", display: "block", marginTop: "2px" }}>
+                            Grounded in Rule: {doc.source_rule_key} · {doc.source_pages}
+                          </small>
+                        )}
+                      </div>
                     </div>
-                    <p style={{ margin: "3px 0 0", fontSize: "12px", color: "#64748b" }}>
-                      {tmpl.authority} · {tmpl.citation}
-                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div style={{ display: "grid", gap: "12px" }}>
+            {STATUTORY_TEMPLATES.map((tmpl) => {
+              const uploaded = ds.find((d) => d.documentName?.toLowerCase().includes(tmpl.templateKey.replace("template_", "").replace("_", " ")));
+              return (
+                <div
+                  key={tmpl.templateKey}
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "14px 16px",
+                    borderRadius: "8px",
+                    border: "1px solid #e2e8f0",
+                    background: uploaded ? "#f8fafc" : "#ffffff",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                    <div
+                      style={{
+                        marginTop: "2px",
+                        padding: "8px",
+                        borderRadius: "6px",
+                        background: uploaded ? "rgba(45,106,79,0.1)" : "rgba(100,116,139,0.1)",
+                        color: uploaded ? "#2d6a4f" : "#64748b",
+                      }}
+                    >
+                      <FileText size={18} />
+                    </div>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                        <b style={{ fontSize: "14px", color: "#1e293b" }}>{tmpl.title}</b>
+                        <span
+                          style={{
+                            fontSize: "11px",
+                            fontWeight: 600,
+                            padding: "2px 8px",
+                            borderRadius: "12px",
+                            background: uploaded ? "#dcfce7" : "#fee2e2",
+                            color: uploaded ? "#15803d" : "#b91c1c",
+                          }}
+                        >
+                          {uploaded ? "Uploaded & Recorded" : "Pending Upload"}
+                        </span>
+                      </div>
+                      <p style={{ margin: "3px 0 0", fontSize: "12px", color: "#64748b" }}>
+                        {tmpl.authority} · {tmpl.citation}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "8px" }}>
+                    <button
+                      type="button"
+                      className="btn secondary"
+                      onClick={() => setActiveTemplate(tmpl)}
+                      style={{ fontSize: "13px", padding: "6px 12px" }}
+                    >
+                      <Download size={14} /> View Template Format
+                    </button>
                   </div>
                 </div>
-
-                <div style={{ display: "flex", gap: "8px" }}>
-                  <button
-                    type="button"
-                    className="btn secondary"
-                    onClick={() => setActiveTemplate(tmpl)}
-                    style={{ fontSize: "13px", padding: "6px 12px" }}
-                  >
-                    <Download size={14} /> View Template Format
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        )}
       </section>
 
       <div className="source-note" style={{ marginTop: "24px" }}>

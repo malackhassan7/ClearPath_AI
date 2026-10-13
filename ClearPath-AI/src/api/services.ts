@@ -21,6 +21,7 @@ import type {
   DocumentRecord,
   NotificationItem,
   Project,
+  ProjectComplianceReport,
   RuleSource,
   User,
   WorkflowDependency,
@@ -75,6 +76,30 @@ export const api = {
       if (mock) return mockApi.projects.create(p);
       const res = await http.post<Json>("/projects/", fromProject(p));
       return envelope(toProject(res.data));
+    },
+    complianceEvaluation: async (
+      projectId: string,
+    ): Promise<ApiResponse<ProjectComplianceReport>> => {
+      if (mock) {
+        return envelope({
+          project_id: projectId,
+          project_name: "Mock Project",
+          evaluation_status: "PENDING_REGULATORY_REVIEW",
+          is_authoritative: false,
+          suggested_fssai_tier: null,
+          tier_explanation:
+            "Candidate regulatory rules in the Source Registry remain in DRAFT status pending formal officer verification.",
+          applicable_activities: ["manufacturing"],
+          matched_rules: [],
+          excluded_rules: [],
+          required_documents: [],
+          evaluated_at: new Date().toISOString(),
+        });
+      }
+      const res = await http.get<ProjectComplianceReport>(
+        `/projects/${projectId}/compliance-evaluation`,
+      );
+      return envelope(res.data);
     },
   },
   clearances: {

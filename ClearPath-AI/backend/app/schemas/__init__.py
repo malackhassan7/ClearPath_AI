@@ -41,6 +41,12 @@ from app.schemas.project import (
     ProjectUpdate,
     StatusUpdateRequest,
 )
+from app.schemas.compliance import (
+    BusinessProfileInput,
+    ProjectComplianceReport,
+    RuleEvaluationItem,
+    DocumentRequirementItem,
+)
 
 __all__ = [
     "RegisterRequest",

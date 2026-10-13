@@ -75,6 +75,14 @@ export const useWorkflow = () =>
     select: (r) => r.data,
   });
 
+export const useProjectCompliance = (projectId: string) =>
+  useQuery({
+    queryKey: ["project-compliance", projectId],
+    queryFn: () => api.projects.complianceEvaluation(projectId),
+    select: (r) => r.data,
+    enabled: Boolean(projectId),
+  });
+
 export function useCreateProject() {
   const qc = useQueryClient();
   return useMutation({

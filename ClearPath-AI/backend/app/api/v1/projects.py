@@ -14,12 +14,17 @@ from app.api.v1.auth import get_current_user
 from app.database import get_db
 from app.models.project import Application, Project
 from app.models.user import User
+from app.schemas.compliance import BusinessProfileInput, ProjectComplianceReport
 from app.schemas.project import (
     ApplicationCreate,
     ApplicationResponse,
     ProjectCreate,
     ProjectResponse,
     ProjectUpdate,
+)
+from app.services.compliance_engine import (
+    evaluate_business_compliance,
+    parse_project_activities,
 )
 
 router = APIRouter(prefix="/projects", tags=["projects"])
@@ -172,3 +177,37 @@ async def create_application(
     db.add(application)
     await db.flush()
     return ApplicationResponse.model_validate(application)
+
+
+# ── Phase 3 Deterministic Compliance Evaluation ───────────────────────────────
+
+@router.post("/evaluate-profile", response_model=ProjectComplianceReport)
+async def evaluate_profile(
+    body: BusinessProfileInput,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ProjectComplianceReport:
+    """Pre-evaluation of statutory clearance requirements from a business profile without needing an existing project."""
+    return await evaluate_business_compliance(db, body)
+
+
+@router.get("/{project_id}/compliance-evaluation", response_model=ProjectComplianceReport)
+async def get_project_compliance(
+    project_id: uuid.UUID,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+) -> ProjectComplianceReport:
+    """
+    Evaluates statutory compliance, applicable registry rules, and document requirements for an existing project.
+    Strictly fail-closed: unreviewed rules result in PENDING_REGULATORY_REVIEW rather than fabricated approvals.
+    """
+    project = await _project_for_user(db, project_id, current_user, write=False)
+    activities = parse_project_activities(project)
+    profile = BusinessProfileInput(
+        activities=activities,
+        capacity_lpd=project.capacity_lpd,
+        annual_turnover_inr=float(project.annual_turnover) if project.annual_turnover is not None else None,
+        district=project.district,
+    )
+    return await evaluate_business_compliance(db, profile, project=project)
+
