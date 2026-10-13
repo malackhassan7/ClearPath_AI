@@ -51,7 +51,7 @@ try {
   await checkPort(8000);
   await checkPort(3000);
   await run(python, ['scripts/backend_setup.py', '--check'], { cwd: backendDir });
-  const api = start(python, ['-m', 'uvicorn', 'app.main:app', '--host', '127.0.0.1', '--port', '8000'], backendDir);
+  const api = start(python, ['-m', 'uvicorn', 'app.main:app', '--host', '127.0.0.1', '--port', '8000', '--reload'], backendDir);
   await waitForHealth('http://127.0.0.1:8000/health', api);
   start(process.execPath, [vite, '--host', '127.0.0.1', '--port', '3000', '--strictPort'], root);
   console.log('CLEARPATH AI / SIH 26130: backend healthy. Frontend starting at http://127.0.0.1:3000');
