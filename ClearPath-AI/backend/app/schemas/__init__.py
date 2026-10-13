@@ -1,0 +1,80 @@
+"""
+Schemas package – re-exports all schemas for convenience.
+"""
+from app.schemas.auth import (
+    AccessTokenResponse,
+    LoginRequest,
+    RefreshTokenRequest,
+    RegisterRequest,
+    TokenResponse,
+    UserResponse,
+)
+from app.schemas.chatbot import (
+    ChatRequest,
+    ChatResponse,
+    ChatSource,
+    ConversationResponse,
+)
+from app.schemas.dairy import (
+    BrandCreate,
+    BrandRequirementResponse,
+    BrandResponse,
+    BusinessTypeResponse,
+    ClassifyBusinessRequest,
+    ClassifyBusinessResponse,
+    CostBreakdown,
+    DistrictSuitabilityScore,
+    DocumentChecklistItem,
+    FSSAIRuleResponse,
+    GovernmentSchemeResponse,
+)
+from app.schemas.grievance import GrievanceCreate, GrievanceResponse, GrievanceUpdate
+from app.schemas.project import (
+    ApplicationCreate,
+    ApplicationResponse,
+    ApplicationReviewCreate,
+    ApplicationReviewResponse,
+    DocumentFlagResponse,
+    DocumentUploadResponse,
+    ProjectCreate,
+    ProjectResponse,
+    ProjectUpdate,
+    StatusUpdateRequest,
+)
+
+__all__ = [
+    "RegisterRequest",
+    "LoginRequest",
+    "TokenResponse",
+    "UserResponse",
+    "RefreshTokenRequest",
+    "AccessTokenResponse",
+    "BrandCreate",
+    "BrandResponse",
+    "BrandRequirementResponse",
+    "BusinessTypeResponse",
+    "FSSAIRuleResponse",
+    "DocumentChecklistItem",
+    "CostBreakdown",
+    "DistrictSuitabilityScore",
+    "ClassifyBusinessRequest",
+    "ClassifyBusinessResponse",
+    "GovernmentSchemeResponse",
+    "ProjectCreate",
+    "ProjectUpdate",
+    "ProjectResponse",
+    "ApplicationCreate",
+    "ApplicationResponse",
+    "DocumentUploadResponse",
+    "DocumentFlagResponse",
+    "ApplicationReviewCreate",
+    "ApplicationReviewResponse",
+    "StatusUpdateRequest",
+    "ChatRequest",
+    "ChatResponse",
+    "ChatSource",
+    "ConversationResponse",
+    "GrievanceCreate",
+    "GrievanceUpdate",
+    "GrievanceResponse",
+]

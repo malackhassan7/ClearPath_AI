@@ -1,0 +1,16 @@
+# OPTIONAL: RAG / OCR / LLM extras. Not imported by the API today, and torch makes the image ~3 GB.
+# Install with:  docker compose build --build-arg INSTALL_ML=1
+-r requirements.txt
+celery[redis]==5.4.0
+redis==5.0.8
+sentence-transformers==3.1.1
+langchain==0.3.3
+langchain-community==0.3.3
+groq==0.11.0
+google-generativeai==0.8.2
+pymupdf==1.24.11
+pytesseract==0.3.13
+pillow==10.4.0
+rank-bm25==0.2.2
+langdetect==1.0.9
+httpx==0.27.2

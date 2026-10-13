@@ -1,0 +1,16 @@
+export const endpoints = {
+  health: "/health",
+  users: "/users",
+  organizations: "/organizations",
+  projects: "/projects",
+  clearances: "/clearances",
+  clearancePerformance: "/clearance-performance",
+  delayAnalysis: "/delay-analysis",
+  bottlenecks: "/bottlenecks",
+  workflow: "/workflow",
+  documents: "/documents",
+  notifications: "/notifications",
+  auditEvents: "/admin/audit-logs",
+  ruleSources: "/admin/sources",
+  reports: "/reports",
+} as const;

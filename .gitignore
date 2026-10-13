@@ -1,0 +1,14 @@
+.firecrawl/
+**/node_modules/
+**/dist/
+**/.venv*/
+**/venv/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.env
+**/.env.*
+!**/.env.example
+**/uploads/
+**/data/*.sqlite3
+**/.local/
