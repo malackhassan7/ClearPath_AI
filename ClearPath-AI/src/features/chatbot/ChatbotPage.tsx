@@ -134,7 +134,7 @@ export function ChatbotPage(): JSX.Element {
           </div>
           <div>
             <h2 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-              <span>DairySetu AI Compliance Assistant</span>
+              <span>ClearPathAI Compliance Assistant</span>
               <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                 Grounded RAG
               </span>

@@ -11,7 +11,7 @@ describe("app entry (main.tsx)", () => {
   it("boots with all providers and shows the sign-in screen", async () => {
     await import("@/main");
     expect(
-      await screen.findByRole("heading", { name: /sign in to dairysetu/i }),
+      await screen.findByRole("heading", { name: /sign in to clearpathai/i }),
     ).toBeInTheDocument();
   });
 });

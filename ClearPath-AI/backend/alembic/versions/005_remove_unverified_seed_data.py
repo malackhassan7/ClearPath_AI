@@ -1,4 +1,4 @@
-"""Remove known deterministic seed rows from earlier DairySetu builds.
+"""Remove known deterministic seed rows from earlier ClearPathAI builds.
 
 Revision ID: 005_remove_unverified_seed_data
 Revises: 004_seed_schemes

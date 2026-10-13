@@ -18,7 +18,7 @@ def init_env() -> None:
             stream.write(
                 "APP_NAME=CLEARPATH AI\nAPP_ENV=development\n"
                 f"POSTGRES_PASSWORD={password}\nPOSTGRES_PORT=55432\n"
-                f"DATABASE_URL=postgresql+asyncpg://dairysetu:{password}@127.0.0.1:55432/dairysetu_tn\n"
+                f"DATABASE_URL=postgresql+asyncpg://clearpathai:{password}@127.0.0.1:55432/clearpathai_tn\n"
                 f"JWT_SECRET_KEY={secrets.token_urlsafe(48)}\n"
                 'CORS_ORIGINS=["http://localhost:3000","http://127.0.0.1:3000","http://localhost:5173"]\n'
             )

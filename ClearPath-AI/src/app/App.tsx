@@ -138,7 +138,7 @@ export function App() {
       {/* ── Sidebar ────────────────────────────────────────── */}
       <aside className="sidebar">
         <div className="brand">
-          <div className="brand-mark dairy-mark" title="DairySetu-TN">
+          <div className="brand-mark dairy-mark" title="ClearPathAI">
             {/* Elegant SVG Milk drop & leaf emblem */}
             <svg
               width="26"
@@ -164,7 +164,7 @@ export function App() {
           </div>
           <div>
             <b>
-              DairySetu<span className="brand-accent">-TN</span>
+              ClearPath<span className="brand-accent">AI</span>
             </b>
             <small>TAMIL NADU DAIRY PLATFORM</small>
           </div>
@@ -334,7 +334,7 @@ export function App() {
           </button>
 
           <div className="crumb">
-            <span>DairySetu</span>
+            <span>ClearPathAI</span>
             <ChevronRight size={14} />
             <b>{pageName(location.pathname)}</b>
           </div>
@@ -433,7 +433,7 @@ export function App() {
         {/* Footer */}
         <footer className="footer">
           <span>
-            DairySetu-TN <span className="footer-dot">•</span> Unified Digital
+            ClearPathAI <span className="footer-dot">•</span> Unified Digital
             Platform for the Tamil Nadu Dairy Ecosystem
           </span>
           <span>
@@ -448,7 +448,7 @@ export function App() {
         <Link
           to="/chatbot"
           className="floating-chat-btn"
-          title="Ask DairySetu AI Assistant"
+          title="Ask ClearPathAI Assistant"
         >
           <MessageSquare size={20} />
           <span>Dairy AI Assist</span>

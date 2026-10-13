@@ -1,4 +1,4 @@
--- DairySetu-TN Legacy Dirty Data Fixture (Phase DB0)
+-- ClearPathAI Legacy Dirty Data Fixture (Phase DB0)
 -- Used to test migration upgrades, constraint safety, and preflight violation reporting.
 
 -- 1. Base Organization

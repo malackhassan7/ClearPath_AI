@@ -34,7 +34,7 @@ export function LandingPage(): JSX.Element {
           </div>
           <div>
             <span className="font-serif font-bold text-lg text-slate-900 tracking-tight block leading-tight">
-              DairySetu<span className="text-primary">-TN</span>
+              ClearPath<span className="text-primary">AI</span>
             </span>
             <span className="text-[10px] uppercase font-bold tracking-widest text-slate-500">
               Tamil Nadu Dairy Ecosystem
@@ -100,7 +100,7 @@ export function LandingPage(): JSX.Element {
               className="w-full sm:w-auto px-6 py-3 rounded-xl bg-white hover:bg-slate-50 text-slate-800 border border-border text-xs font-bold flex items-center justify-center gap-2 shadow-2xs transition"
             >
               <MessageSquare size={15} className="text-primary" />
-              <span>Ask DairySetu AI Assistant</span>
+              <span>Ask ClearPathAI Assistant</span>
             </Link>
           </div>
         </div>
@@ -291,7 +291,7 @@ export function LandingPage(): JSX.Element {
       <footer className="border-t border-border bg-white px-6 py-10 text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <b>DairySetu-TN:</b> A Unified Digital Platform for the Tamil Nadu Dairy Ecosystem.
+            <b>ClearPathAI:</b> A Unified Digital Platform for the Tamil Nadu Dairy Ecosystem.
           </div>
           <div>
             All compliance and milk production figures cited from official publications. Final determination rests with authorized FSSAI officers.

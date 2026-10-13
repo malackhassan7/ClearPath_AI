@@ -4,7 +4,7 @@ Review date: 13 October 2026 (Asia/Calcutta).
 
 ## Scope and status
 
-Existing project: `ClearPath-AI`, formerly `DairySetu-TN-Secured`. Preserve the existing React/TypeScript and FastAPI architecture. Dairy manufacturing, retail and distribution are the first fictional case study. No deployment decision has been made.
+Existing project: `ClearPath-AI` (`ClearPathAI`). Preserve the existing React/TypeScript and FastAPI architecture. Dairy manufacturing, retail and distribution are the first fictional case study. No deployment decision has been made.
 
 | Phase | Status | Exit-gate evidence |
 |---|---|---|

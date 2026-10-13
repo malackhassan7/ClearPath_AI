@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-DairySetu-TN Database Preflight Verifier (Phase DB0)
+ClearPathAI Database Preflight Verifier (Phase DB0)
 
 Read-only inspection script that detects violations of upcoming schema constraints:
 1. Case-duplicate user emails
@@ -66,7 +66,7 @@ class PreflightReport:
 
     def print_summary(self) -> None:
         print("=" * 80)
-        print("DAIRYSETU-TN DATABASE PREFLIGHT REPORT (READ-ONLY)")
+        print("CLEARPATHAI DATABASE PREFLIGHT REPORT (READ-ONLY)")
         print("=" * 80)
         if not self.violations:
             print("STATUS: PASS - Zero constraint violations detected across all checked tables.")
@@ -350,7 +350,7 @@ def run_preflight(engine: Engine, upload_dir: str | Path | None = None) -> Prefl
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="DairySetu-TN Database Preflight Verifier")
+    parser = argparse.ArgumentParser(description="ClearPathAI Database Preflight Verifier")
     parser.add_argument(
         "--db-url",
         default=os.getenv("SYNC_DATABASE_URL"),
@@ -369,7 +369,7 @@ def main() -> int:
             from app.config import settings
             db_url = settings.SYNC_DATABASE_URL
         except Exception:
-            db_url = "postgresql://dairysetu:change-this-local-password@127.0.0.1:5432/dairysetu_tn"
+            db_url = "postgresql://clearpathai:change-this-local-password@127.0.0.1:5432/clearpathai_tn"
 
     try:
         engine = create_engine(db_url, pool_pre_ping=True)

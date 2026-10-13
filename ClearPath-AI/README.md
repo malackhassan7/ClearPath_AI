@@ -65,7 +65,7 @@ Without `TEST_DATABASE_URL`, real PostgreSQL tests are explicitly skipped. They 
 docker compose -f backend/docker-compose.yml --env-file backend/.env --profile test up -d test-db
 ```
 
-Set `TEST_DATABASE_URL` to the test service's URL using the password from your local `backend/.env`, port 5433 and database `dairysetu_test`, then run `python -m pytest -q -m real_postgres` with the project interpreter from `backend`. Do not put passwords into shared command logs. The configured database name must end in `_test`.
+Set `TEST_DATABASE_URL` to the test service's URL using the password from your local `backend/.env`, port 5433 and database `clearpathai_test`, then run `python -m pytest -q -m real_postgres` with the project interpreter from `backend`. Do not put passwords into shared command logs. The configured database name must end in `_test`.
 
 The persistence test creates its own uniquely named disposable database, applies migrations twice, creates a fictional user/project through FastAPI, then retrieves the project in a fresh Python process. It drops only that newly created database. The test role needs CREATE DATABASE permission. An explicitly configured but unreachable test database fails the test run rather than silently skipping.
 

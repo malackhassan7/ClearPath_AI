@@ -1,4 +1,4 @@
-# DairySetu-TN data and UI repair note
+# ClearPathAI data and UI repair note
 
 ## Source checks (11 October 2026)
 

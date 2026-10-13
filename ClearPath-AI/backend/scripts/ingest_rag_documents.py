@@ -1,5 +1,5 @@
 """
-DairySetu-TN — RAG Official Document Ingestion Pipeline.
+ClearPathAI — RAG Official Document Ingestion Pipeline.
 Downloads and chunks official government PDFs (FSSAI FoSCoS, Aavin TCMPF)
 and prepares embeddings for pgvector vector search.
 """
@@ -50,7 +50,7 @@ def chunk_text(text: str, chunk_size: int = 400, overlap: int = 50) -> List[str]
 
 async def ingest_documents():
     print("=" * 65)
-    print("DAIRYSETU-TN: OFFICIAL DOCUMENT INGESTION PIPELINE")
+    print("CLEARPATHAI: OFFICIAL DOCUMENT INGESTION PIPELINE")
     print("=" * 65)
     print(f"Total Official PDF Gazettes Scheduled: {len(OFFICIAL_PDF_SOURCES)}")
 

@@ -1,5 +1,5 @@
 """
-Phase 1 Test Runner for DairySetu-TN
+Phase 1 Test Runner for ClearPathAI
 Executes tests using Python's standard library asyncio and unittest.
 """
 import asyncio
@@ -36,7 +36,7 @@ from tests.test_auth import (
 
 def run_all_phase1_tests():
     print("=" * 60)
-    print("RUNNING DAIRYSETU-TN PHASE 1 VERIFICATION TESTS")
+    print("RUNNING CLEARPATHAI PHASE 1 VERIFICATION TESTS")
     print("=" * 60)
 
     total_passed = 0

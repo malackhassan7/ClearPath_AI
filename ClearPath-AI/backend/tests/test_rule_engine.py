@@ -1,5 +1,5 @@
 """
-Tests for DairySetu-TN Rule Engine.
+Tests for ClearPathAI Rule Engine.
 Validates FSSAI classification, statutory rules, fee computation, and district scoring.
 """
 try:

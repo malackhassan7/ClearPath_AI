@@ -556,7 +556,7 @@ export function ProjectWizard({ projects, onCreate, editId, onToast }: PageProps
                     <div>
                       <b>Academic & Decision Support Notice</b>
                       <p>
-                        This will generate a tracked project in your DairySetu-TN workspace. All rules, fees, and checklists are grounded in official FoSCoS and Aavin guidelines. Official clearances require submission via FoSCoS portal.
+                        This will generate a tracked project in your ClearPathAI workspace. All rules, fees, and checklists are grounded in official FoSCoS and Aavin guidelines. Official clearances require submission via FoSCoS portal.
                       </p>
                     </div>
                   </div>

@@ -1,5 +1,5 @@
 """
-Reference data loader for DairySetu-TN.
+Reference data loader for ClearPathAI.
 Loads verified official reference data into PostgreSQL:
 1. District Milk Production (Tamil Nadu 38 districts time-series from data.gov.in)
 2. Dairy Brands & Franchise Requirements (Aavin, Hatsun, Heritage, Dodla)

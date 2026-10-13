@@ -12,7 +12,7 @@ interface LanguageContextType {
 export const translations: Record<Language, Record<string, string>> = {
   en: {
     // Brand & Header
-    platform_name: "DairySetu-TN",
+    platform_name: "ClearPathAI",
     platform_tagline: "TAMIL NADU DAIRY PLATFORM",
     official_data_badge: "Official Sourced Data",
     official_data_sub: "data.gov.in & FoSCoS",
@@ -200,7 +200,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [lang, setLangState] = useState<Language>(() => {
     try {
-      const stored = localStorage.getItem("dairysetu_lang");
+      const stored = localStorage.getItem("clearpathai_lang");
       return stored === "ta" ? "ta" : "en";
     } catch {
       return "en";
@@ -210,7 +210,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
   const setLang = (newLang: Language) => {
     setLangState(newLang);
     try {
-      localStorage.setItem("dairysetu_lang", newLang);
+      localStorage.setItem("clearpathai_lang", newLang);
     } catch {
       // ignore
     }

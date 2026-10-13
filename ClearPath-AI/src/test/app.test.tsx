@@ -5,11 +5,11 @@ import { renderApp } from "./utils";
 
 beforeEach(() => localStorage.clear());
 
-describe("DairySetu-TN shell", () => {
+describe("ClearPathAI shell", () => {
   it("renders the sign-in screen and role selector", () => {
     renderApp(<App />, "/login");
     expect(
-      screen.getByRole("heading", { name: /sign in to dairysetu/i }),
+      screen.getByRole("heading", { name: /sign in to clearpathai/i }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /sign in to platform/i }),

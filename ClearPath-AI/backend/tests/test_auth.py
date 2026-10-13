@@ -1,5 +1,5 @@
 """
-Tests for DairySetu-TN Authentication & JWT Token Handling.
+Tests for ClearPathAI Authentication & JWT Token Handling.
 """
 from datetime import timedelta
 try:

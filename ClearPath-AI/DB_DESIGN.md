@@ -1,7 +1,7 @@
-# DairySetu-TN Database Design & Integrity Specification
+# ClearPathAI Database Design & Integrity Specification
 
 ## 1. Entity-Relationship Overview
-DairySetu-TN comprises 25 relational tables and pgvector embeddings supporting Tamil Nadu dairy compliance, traceability, and market intelligence:
+ClearPathAI comprises 25 relational tables and pgvector embeddings supporting Tamil Nadu dairy compliance, traceability, and market intelligence:
 
 ```
 [Users] ──< [UserOrganization] >── [Organizations]

@@ -1,5 +1,5 @@
 """
-Chatbot API router for DairySetu-TN.
+Chatbot API router for ClearPathAI.
 Provides high-quality, grounded RAG Q&A in English and Tamil with source citations and SSE streaming.
 """
 from __future__ import annotations

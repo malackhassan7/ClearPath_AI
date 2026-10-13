@@ -1,0 +1,25 @@
+# Node dependencies & build
+node_modules/
+dist/
+*.local
+
+# Python environment & cache
+.venv*/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+
+# Environment & secrets
+.env
+*.env
+!.env.example
+
+# Temporary and office lock files
+~$*
+*.tmp
+
+# Uploads
+uploads/

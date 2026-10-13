@@ -1,5 +1,5 @@
 """
-Tests for DairySetu-TN RAG Chatbot Service.
+Tests for ClearPathAI RAG Chatbot Service.
 Validates language detection, hybrid search, grounding, and bilingual answers.
 """
 try:

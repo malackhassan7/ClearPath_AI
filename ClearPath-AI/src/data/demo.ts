@@ -18,8 +18,8 @@ export const users: Record<
   },
   admin: {
     name: "System Administrator",
-    email: "admin@dairysetu.example",
-    org: "DairySetu-TN Platform Management",
+    email: "admin@clearpathai.example",
+    org: "ClearPathAI Platform Management",
     initials: "SA",
   },
   farmer: {
@@ -42,8 +42,8 @@ export const users: Record<
   },
   consultant: {
     name: "Priya Raman",
-    email: "priya@dairysetu.example",
-    org: "DairySetu Compliance Advisory",
+    email: "priya@clearpathai.example",
+    org: "ClearPathAI Compliance Advisory",
     initials: "PR",
   },
 };

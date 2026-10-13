@@ -1,6 +1,6 @@
 # Merge report: Data-UI-Repair + Auth-API-Fix
 
-Base: DairySetu-TN-Data-UI-Repair (full project). Applied from DairySetu-TN-Auth-API-Fix (3 files):
+Base: ClearPathAI-Data-UI-Repair (full project). Applied from ClearPathAI-Auth-API-Fix (3 files):
 - `src/api/client.ts`: attaches the real JWT to every API call (ignores fake `local-token-*`).
 - `src/app/session.tsx`: clears old fake sessions on start; session only counts if a real token exists.
 - `src/features/auth/AuthPage.tsx`: no more silent fake login/registration; register sends the backend schema and stores real tokens; real error messages shown.

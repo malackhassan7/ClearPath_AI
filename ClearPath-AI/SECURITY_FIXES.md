@@ -24,7 +24,7 @@ NOT verified here: anything that needs PostgreSQL/Docker (see "Run this first" a
 3. `docker compose up -d --build`
 4. Create the first admin: `docker compose exec api python scripts/create_admin.py --email you@example.com --name "Your Name"`
 5. **Check existing accounts**, because anyone could self-register as admin before this fix:
-   `docker compose exec db psql -U dairysetu -d dairysetu_tn -c "select email, role from users where role in ('admin','officer');"`
+   `docker compose exec db psql -U clearpathai -d clearpathai_tn -c "select email, role from users where role in ('admin','officer');"`
    and demote/deactivate any you do not recognise.
 
 ## Still open (not done in this round)

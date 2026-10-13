@@ -1,6 +1,6 @@
-$sourceDir = "c:\Users\ATIF AHMED\Downloads\DairySetu-TN-Secured"
-$zipPath = "c:\Users\ATIF AHMED\Downloads\DairySetu-TN-Secured.zip"
-$tempZip = "c:\Users\ATIF AHMED\Downloads\DairySetu-TN-Secured-temp.zip"
+$sourceDir = "c:\Users\ATIF AHMED\Downloads\ClearPathAI"
+$zipPath = "c:\Users\ATIF AHMED\Downloads\ClearPathAI.zip"
+$tempZip = "c:\Users\ATIF AHMED\Downloads\ClearPathAI-temp.zip"
 
 Write-Host "Creating fresh ZIP archive excluding transient folders..."
 if (Test-Path $tempZip) { Remove-Item $tempZip -Force }

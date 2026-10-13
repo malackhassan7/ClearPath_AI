@@ -1,5 +1,5 @@
 /**
- * DairySetu-TN Platform Type Definitions
+ * ClearPathAI Platform Type Definitions
  * Unified digital ecosystem for Tamil Nadu dairy compliance, market intelligence, and traceability.
  */
 

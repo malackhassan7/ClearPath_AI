@@ -1,4 +1,4 @@
--- DairySetu-TN Captured Legacy Schema (Phase DB0)
+-- ClearPathAI Captured Legacy Schema (Phase DB0)
 -- Generated from app.models Base.metadata with PostgreSQL dialect
 
 CREATE EXTENSION IF NOT EXISTS vector;

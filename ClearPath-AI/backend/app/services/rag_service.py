@@ -1,6 +1,6 @@
 """
-DairySetu-TN RAG Service
-========================
+ClearPathAI RAG Service
+=======================
 High-Quality Retrieval-Augmented Generation for Tamil Nadu Dairy Ecosystem.
 
 Pipeline:

@@ -27,10 +27,10 @@ def test_alembic_env_rejects_sqlite_and_empty_urls():
     with pytest.raises(RuntimeError, match="SQLite fallback is strictly forbidden"):
         _verify_postgres_url("", "TEST_URL")
 
-    valid_sync = "postgresql://user:pass@localhost:5432/dairysetu_tn"
+    valid_sync = "postgresql://user:pass@localhost:5432/clearpathai_tn"
     assert _verify_postgres_url(valid_sync, "SYNC_URL") == valid_sync
 
-    valid_async = "postgresql+asyncpg://user:pass@localhost:5432/dairysetu_tn"
+    valid_async = "postgresql+asyncpg://user:pass@localhost:5432/clearpathai_tn"
     assert _verify_postgres_url(valid_async, "ASYNC_URL") == valid_async
 
 

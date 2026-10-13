@@ -1,6 +1,6 @@
 """
-DairySetu-TN Rule Engine Service
-=================================
+ClearPathAI Rule Engine Service
+===============================
 Automated business classification, FSSAI licensing tier determination,
 document checklist generation, cost calculation, district suitability scoring,
 and document validation.

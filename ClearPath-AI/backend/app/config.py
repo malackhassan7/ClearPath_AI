@@ -38,7 +38,7 @@ class Settings(BaseSettings):
 
     # ── Database ──────────────────────────────────────────────────────────────
     DATABASE_URL: str = (
-        "postgresql+asyncpg://dairysetu:change-this-local-password@localhost:5432/dairysetu_tn"
+        "postgresql+asyncpg://clearpathai:change-this-local-password@localhost:5432/clearpathai_tn"
     )
     SYNC_DATABASE_URL: str = ""
 
@@ -90,7 +90,7 @@ class Settings(BaseSettings):
         if not weak:
             return self
         if self.APP_ENV.lower() in ("development", "dev", "test", "testing"):
-            logging.getLogger("dairysetu").warning(
+            logging.getLogger("clearpathai").warning(
                 "JWT_SECRET_KEY is missing or a placeholder. Using a random secret for this run; "
                 "sign-ins end when the server restarts. Set JWT_SECRET_KEY in backend/.env to keep them."
             )

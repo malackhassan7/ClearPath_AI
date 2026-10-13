@@ -65,7 +65,7 @@ remain distinct and gated independently.
 ## DevOps Status and Infrastructure Decision
 
 - **Host PostgreSQL Setup:**
-  - PostgreSQL 16 is installed directly on the host (port 5433 for test database `dairysetu_test`, port 55432 for main development database `dairysetu_tn`).
+  - PostgreSQL 16 is installed directly on the host (port 5433 for test database `clearpathai_test`, port 55432 for main development database `clearpathai_tn`).
   - `pgvector` extension is active and verified via `test_real_postgres.py`.
   - Docker Compose is not required and was not introduced.
 - **Python Virtual Environment:**
@@ -80,7 +80,7 @@ remain distinct and gated independently.
 ### Execution Commands:
 ```powershell
 # 1. Backend tests with real PostgreSQL test database:
-$env:TEST_DATABASE_URL="postgresql://dairysetu:<password>@127.0.0.1:5433/dairysetu_test"
+$env:TEST_DATABASE_URL="postgresql://<user>:<password>@127.0.0.1:5433/<test_db_ending_in_test>"
 ..\.venv-backend\Scripts\python.exe -m pytest tests
 
 # 2. Frontend unit and process tests:
@@ -184,3 +184,18 @@ With Phase 2 source registry, rule review workflow, and verification gates verif
 - Proceed to Phase 3: Typed multi-activity rule evaluators executing against human-reviewed rules.
 - Maintain strict fail-closed posture for unverified criteria.
 - Produce explainable, source-grounded clearance and checklist requirements once rules are certified.
+
+---
+
+## Project Identity & Branding Harmonization
+
+### Complete Removal of Obsolete Legacy Branding
+All references to legacy prototype names (`DairySetu`, `DairySetu-TN`, `DairySetu-TN-Secured`, and associated keys) have been systematically audited, purged, and harmonized to **ClearPathAI** / **CLEARPATH AI** across the codebase:
+- **Frontend UI & Views:** `index.html`, `src/styles.css`, `src/types/index.ts`, `src/app/App.tsx`, `src/app/LanguageContext.tsx` (`clearpathai_lang`), `src/data/demo.ts` (`@clearpathai.example`), `src/features/auth/AuthPage.tsx`, `src/features/landing/LandingPage.tsx`, `src/features/chatbot/ChatbotPage.tsx`, and `src/features/projects/ProjectWizard.tsx`.
+- **Frontend Tests:** `src/test/app.test.tsx` and `src/test/main.test.tsx` updated to assert ClearPathAI branding.
+- **Backend Services & Scripts:** `backend/app/config.py` (logger `clearpathai`), `backend/app/api/v1/chatbot.py`, `backend/app/services/rag_service.py`, `backend/app/services/rule_engine.py`, `backend/scripts/ingest_rag_documents.py`, `backend/scripts/load_reference_data.py`, `backend/scripts/db_preflight.py`, `backend/scripts/backend_setup.py`, and `backend/tests/run_tests.py`.
+- **Backend Tests & Fixtures:** `backend/tests/test_auth.py`, `backend/tests/test_rag.py`, `backend/tests/test_rule_engine.py`, `backend/tests/test_foundation.py`, `backend/tests/test_migrations.py`, `backend/alembic/versions/005_remove_unverified_seed_data.py`, `backend/tests/fixtures/legacy_data.sql`, and `backend/tests/fixtures/legacy_schema.sql`.
+- **Build & Packaging Scripts:** `scripts/make_zip.ps1`, `backend/alembic.ini`, and `backend/docker-compose.yml`.
+- **Documentation:** `DB_DESIGN.md`, `DATASET_VERIFICATION_AND_REPAIR.md`, `MERGE_REPORT.md`, `SECURITY_FIXES.md`, `PHASE0_PHASE1_EVIDENCE.md`, and `README.md`.
+- **Project Governance (`AGENT.md` / `AGENTS.md`):** Permanent naming immutability rule established prohibiting any developer, agent, or process from renaming or re-introducing legacy project identifiers.
+

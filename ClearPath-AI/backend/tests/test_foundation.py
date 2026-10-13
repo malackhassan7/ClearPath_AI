@@ -82,7 +82,7 @@ def test_failed_database_health_is_503_and_rolls_back_without_leaking_secrets(cl
 def test_database_tests_never_discover_application_database(monkeypatch):
     monkeypatch.delenv("TEST_DATABASE_URL", raising=False)
     assert _get_candidate_pg_urls() == []
-    monkeypatch.setenv("TEST_DATABASE_URL", "postgresql://u:p@localhost/dairysetu_tn")
+    monkeypatch.setenv("TEST_DATABASE_URL", "postgresql://u:p@localhost/clearpathai_tn")
     with pytest.raises(ValueError, match="dedicated"):
         _get_candidate_pg_urls()
 
