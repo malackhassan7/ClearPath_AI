@@ -1,4 +1,4 @@
-﻿# ClearPath-AI / SIH 26130 — Phase 2 Report: Source Registry and Regulatory Rule Review
+# ClearPath-AI / SIH 26130 — Phase 2 Report: Source Registry and Regulatory Rule Review
 
 Report date: 13 October 2026 (Asia/Kolkata).
 
@@ -37,7 +37,12 @@ remain distinct and gated independently.
 | backend/app/api/v1/registry.py | Added GET /sources/versions/{id} and GET /registry/rules/{id} |
 | backend/tests/test_registry.py | Added 3 tests: auth guard on single-record GETs, 404 for unknown IDs |
 | src/api/registry.ts | Added source(id) and rule(id) fetch methods |
-| PHASE2_REPORT.md | This file (replaces outdated TNSWP-CSV-only content) |
+| backend/app/services/rag_service.py | Connected to source registry via `search_verified_registry`, fail-closed unverified rule guard, exact citation grounding, safe LLM integration |
+| backend/app/api/v1/chatbot.py | Connected `stream_chat` to `search_verified_registry` with DB session dependency |
+| backend/tests/test_rag.py | Added verified registry search tests, citation formatting tests, fail-closed assertions |
+| src/features/chatbot/ChatbotPage.tsx | Connected to `httpClient.post("/chatbot/chat")`, added JSDOM `scrollIntoView` guard, updated grounded copy |
+| src/test/chatbot.test.tsx | Added 3 frontend unit tests for ChatbotPage verifying intro banner, fail-closed handling, and citation display |
+| PHASE2_REPORT.md | Updated test results and resolved CP-008 defect |
 
 ## Migration 012: source_versions and registry_rules
 
@@ -50,41 +55,30 @@ Migration 012_source_registry.py (already applied at revision head) creates:
 
 ## Test results (13 October 2026)
 
-### Backend (non-postgres)
+### Backend (real_postgres, TEST_DATABASE_URL with PostgreSQL 16 + pgvector)
 
-  77 passed, 11 deselected in 5.65s
+  90 passed in 26.16s (0 failed, 0 errors, 0 skipped, 0 deselected)
 
-Phase 2 registry tests (22 in test_registry.py + test_rule_engine.py):
-- PDF rejection: forged headers, oversized, encrypted (3 tests)
-- Schema validation: invalid state, invalid activity (1 test)
-- Authentication: list endpoints return 401 (2 tests)
-- Authentication: single-record GET returns 401 (2 tests, NEW)
-- Single-record 404: unknown IDs return 404 not empty body (1 test, NEW)
-- Authorization: unprivileged roles cannot review or resolve conflicts (4 tests)
-- Checklist: does not infer FSSAI tier from capacity without reviewed rows (1 test)
-- Chatbot: streaming has no sources and no embedded fees (1 test)
-- Rule engine: refuses all operations without reviewed rows (5 tests)
-- Document validation: tier-1 extension check, tier-2 name consistency (2 tests)
-
-### Backend (real_postgres, requires TEST_DATABASE_URL)
-
-6 tests in test_registry_postgres.py:
-1. Provenance idempotency and corrected-metadata versioning
-2. Immutability enforcement (UPDATE and DELETE both rejected by trigger)
-3. Page citation validation and activity authorization
-4. Review transitions, source revocation cascades to dependent rules, audit trail
-5. Conflict prevention and resolution workflow
-6. Import script idempotency: 3 source versions, 9 activity-specific DRAFT rules
+Including:
+- test_rag.py (6 tests): language detection, static search refusal, fail-closed unreviewed fees, Tamil unreviewed refusal, grounded exact citations, DB-safe search
+- test_real_postgres.py (3 tests): PostgreSQL version, pgvector extension, vector math
+- test_registry.py (13 tests): PDF intake security, schema constraints, authentication, 404 handling, authorization, checklist tier gate, streaming review gate
+- test_registry_postgres.py (7 tests): provenance idempotency, immutability trigger, page citations, review transitions & revocation, conflict prevention, reference PDF intake
+- test_rule_engine.py (7 tests): fail-closed classify, fssai, cost, district suitability, unverified checklist, tier 1/2 document validation
+- test_security_fixes.py (25 tests): auth guards, role boundaries, data protection, leak prevention
+- test_foundation.py, test_migrations.py, test_persistence.py, test_preflight.py (29 tests)
 
 ### Frontend
 
-  35 passed (10 files)
+  38 passed (11 test files in Vitest) + 4 passed (Node process tests) = 42 passed
+  TypeScript compilation (`tsc --noEmit`): 0 errors
 
-Registry-specific (4, src/test/registry.test.tsx):
-- Provenance displayed without review controls for non-admin
-- Correct expected_state sent on review submission
-- Verification blocked while conflict note is set
-- Activity filter keeps manufacturing/retail/distribution distinct
+Including:
+- src/test/chatbot.test.tsx (3 tests, NEW): intro message, fail-closed handling without verified rules, verified citation rendering
+- src/test/registry.test.tsx (4 tests): review workflow, state transitions, conflict note blocking, activity isolation
+- src/test/documents.test.tsx (5 tests): upload, validation, deletion confirmation
+- src/test/accessGuards.test.tsx, api.test.tsx, app.test.tsx, authRefresh.test.ts, liveApi.test.ts, main.test.tsx, register.test.tsx, tnswp.test.ts (26 tests)
+- scripts/processes.test.mjs (4 tests): startup sequence prerequisites and readiness
 
 ## Reference source imports
 
@@ -140,7 +134,7 @@ Until a rule_key+activity has a VERIFIED rule with a VERIFIED source version:
 | CP-003 | canonical_url and retrieved_at are unknown for local reference PDFs; human review needed before VERIFIED state is reachable. |
 | CP-004 | No VERIFIED rules exist yet; rule engine returns 503 for all capacity/fee/tier queries. Intentional (fail-closed). |
 | CP-002 | Document validation still uses file-extension and name checks only. |
-| CP-008 | Chatbot uses static keyword matching; no RAG pipeline is connected to the source registry. |
+| CP-008 | (RESOLVED) Chatbot is connected to `search_verified_registry` and strictly grounded on verified source versions and rules in the registry. It fails closed when unreviewed/draft rules exist and never emits unreviewed fees or thresholds. |
 
 ## Manual verification steps
 

@@ -13,6 +13,7 @@ import {
   Sparkles,
   User,
 } from "lucide-react";
+import { httpClient } from "@/api/httpClient";
 
 interface Source {
   document_title: string;
@@ -46,7 +47,7 @@ export function ChatbotPage(): JSX.Element {
       id: "intro",
       role: "assistant",
       content:
-        "Vanakkam. The official-document ingestion and live retrieval service is not yet verified as available. I will not invent compliance answers or citations. Once the backend RAG service is connected and the source documents are indexed, I can answer with document and page references.",
+        "Vanakkam. I am the ClearPath-AI Compliance Assistant. I provide regulatory answers grounded strictly in verified official documents from the source registry. If no reviewed evidence exists for a query, I fail closed to prevent regulatory misinformation. How can I help you today?",
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     },
   ]);
@@ -57,7 +58,9 @@ export function ChatbotPage(): JSX.Element {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (typeof messagesEndRef.current?.scrollIntoView === "function") {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
@@ -80,15 +83,14 @@ export function ChatbotPage(): JSX.Element {
     setLoading(true);
 
     try {
-      // 1. Try calling backend FastAPI endpoint
-      const response = await fetch("http://localhost:8000/api/v1/chatbot/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ question: q, language: lang }),
-      });
+      const response = await httpClient.post<{
+        answer: string;
+        sources?: Source[];
+        language?: "en" | "ta";
+      }>("/chatbot/chat", { question: q, language: lang });
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.data) {
+        const data = response.data;
         const aiMsg: Message = {
           id: `ai-${Date.now()}`,
           role: "assistant",
@@ -102,13 +104,13 @@ export function ChatbotPage(): JSX.Element {
         return;
       }
     } catch {
-      // Backend not running; fall back to verified grounded knowledge base
+      // Backend not running or failed
     }
 
     setMessages((prev) => [...prev, {
       id: `ai-${Date.now()}`,
       role: "assistant",
-      content: "I could not reach the live official-document retrieval service. No answer was generated and no substitute/demo answer was used. Please try again after the backend RAG service is running and its official documents have been ingested.",
+      content: "I could not reach the live official-document retrieval service. No answer was generated and no substitute/demo answer was used. Please ensure the backend is running and official documents have been verified.",
       sources: [],
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       language: lang,

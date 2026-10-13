@@ -19,7 +19,13 @@ from app.database import get_db
 from app.models.chatbot import ChatbotConversation
 from app.models.user import User
 from app.schemas.admin import ConversationResponse
-from app.services.rag_service import chat_service, detect_language, format_grounded_answer, hybrid_search
+from app.services.rag_service import (
+    chat_service,
+    detect_language,
+    format_grounded_answer,
+    hybrid_search,
+    search_verified_registry,
+)
 
 router = APIRouter(prefix="/chatbot", tags=["chatbot"])
 
@@ -52,12 +58,13 @@ async def chat_endpoint(
 async def stream_chat(
     q: str = Query(..., min_length=2, max_length=500),
     lang: str | None = Query(None),
+    db: AsyncSession = Depends(get_db),
 ):
     """
     Streams the AI response token-by-token via Server-Sent Events (SSE).
     """
     language = lang or detect_language(q)
-    chunks = hybrid_search(q, top_k=3)
+    chunks = await search_verified_registry(db, q, top_k=3)
     answer, citations = format_grounded_answer(q, chunks, language)
 
     async def event_generator():
