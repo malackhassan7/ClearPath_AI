@@ -438,12 +438,20 @@ export function ProjectWizard({ projects, onCreate, editId, onToast }: PageProps
               {step === 4 && (
                 <div className="review-summary">
                   <div style={{ background: "rgba(27,108,92,0.06)", padding: "16px", borderRadius: "10px", gridColumn: "span 2", border: "1px solid rgba(27,108,92,0.2)" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--teal-primary)", fontWeight: 700, fontSize: "17px", marginBottom: "6px" }}>
-                      <ShieldCheck size={20} /> Computed Compliance Tier: {fssaiEstimate.tier}
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "var(--teal-primary)", fontWeight: 700, fontSize: "17px" }}>
+                        <ShieldCheck size={20} /> Computed Compliance Tier: {fssaiEstimate.tier}
+                      </div>
+                      <span style={{ background: "#fef3c7", color: "#92400e", fontSize: "11px", fontWeight: 700, padding: "3px 8px", borderRadius: "4px" }}>
+                        DEMO ESTIMATE · REGULATORY REVIEW PENDING
+                      </span>
                     </div>
                     <p style={{ margin: "0 0 10px 0", fontSize: "14px", color: "var(--slate-text)" }}>
                       Based on capacity of <b>{v.capacityLpd} LPD</b> and annual turnover of <b>₹{v.annualTurnoverLakhs} Lakhs</b>, the rule engine classifies this business under <b>{fssaiEstimate.form}</b>.
                     </p>
+                    <div style={{ fontSize: "12px", color: "#b45309", background: "#fffbeb", padding: "8px 10px", borderRadius: "6px", border: "1px solid #fde68a", marginBottom: "10px" }}>
+                      ⚠️ <b>Notice:</b> Reference rules in the ClearPath AI Source Registry are currently in <code>NEEDS_REVIEW</code> status. Definitive statutory determinations fail closed until administrative review is finalized. This calculation serves as a demonstration estimate only.
+                    </div>
                     <div style={{ fontSize: "13px", color: "var(--slate-muted)" }}>
                       <b>Data status:</b> {fssaiEstimate.source}
                     </div>

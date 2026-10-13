@@ -225,3 +225,67 @@ def test_new_conflicting_version_invalidates_earlier_review(registry_client):
     rules=client.get("/api/v1/registry/rules",headers=tokens["reader"]).json()
     assert next(r for r in rules if r["id"]==draft["id"])["state"]=="NEEDS_REVIEW"
     assert review(client,tokens,"source",old,"VERIFIED").status_code==409
+
+
+def test_phase2_seven_minimum_verification_gates(registry_client):
+    """Explicitly verify the 7 minimum Phase 2 requirements on live PostgreSQL."""
+    client, engine, tokens = registry_client
+
+    # 1. Missing or unverified provenance prevents verification
+    source_no_url = upload(client, tokens)  # canonical_url=None, retrieved_at=None
+    res1 = review(client, tokens, "source", source_no_url, "VERIFIED")
+    assert res1.status_code == 409
+    assert "Verification requires an original retrieval date and canonical source URL" in res1.text
+
+    # 2. An unauthorized user cannot approve a rule
+    good_source = verified_source(client, tokens)
+    draft_rule = make_rule(client, tokens, good_source).json()
+    pending_rule = review(client, tokens, "rule", draft_rule, "NEEDS_REVIEW").json()
+    # 2a. Reader role cannot approve (403)
+    res2a = review(client, tokens, "rule", pending_rule, "VERIFIED", actor="reader")
+    assert res2a.status_code == 403
+    # 2b. Author cannot approve own drafted rule (403 separation of duties)
+    res2b = review(client, tokens, "rule", pending_rule, "VERIFIED", actor="author")
+    assert res2b.status_code == 403
+
+    # 3. Required review evidence cannot be bypassed (< 10 chars returns 422)
+    res3 = client.post(f"/api/v1/registry/rules/{pending_rule['id']}/review", headers=tokens["reviewer"], json={
+        "expected_state": "NEEDS_REVIEW", "state": "VERIFIED", "reason": "too short"
+    })
+    assert res3.status_code == 422
+
+    # 4. Conflicts cannot leave a stale rule authoritative
+    res_app = review(client, tokens, "rule", pending_rule, "VERIFIED", actor="reviewer")
+    assert res_app.status_code == 200
+    # Flag conflict on rule: drops state to NEEDS_REVIEW
+    res_conf = client.post(f"/api/v1/registry/rules/{pending_rule['id']}/conflict", headers=tokens["reviewer"], json={
+        "conflict_note": "Conflicting gazette notification reported", "reason": "Validating conflict invalidation"
+    })
+    assert res_conf.status_code == 200
+    assert res_conf.json()["state"] == "NEEDS_REVIEW"
+    # Cannot be verified while conflict is unresolved
+    res_reapprove = review(client, tokens, "rule", res_conf.json(), "VERIFIED", actor="reviewer")
+    assert res_reapprove.status_code == 409
+
+    # 5. Unverified or inapplicable rules cannot produce authoritative compliance results or chatbot citations
+    res5 = client.get("/api/v1/chatbot/chat/stream", params={"q": "solar panel tariff calculation", "activity": "distribution"})
+    assert res5.status_code == 200
+    assert '"sources": []' in res5.text
+
+    # 6. Unknown dates remain unknown (published_on, effective_on, retrieved_at are null, not synthesized)
+    source_record = client.get(f"/api/v1/sources/versions/{source_no_url['id']}", headers=tokens["reader"]).json()
+    assert source_record["published_on"] is None
+    assert source_record["effective_on"] is None
+    assert source_record["retrieved_at"] is None
+    assert source_record["received_at"] is not None
+
+    # 7. Existing source-version immutability and audit history remain intact
+    with pytest.raises(Exception, match="immutable|cannot be deleted"):
+        with engine.begin() as conn:
+            conn.execute(text("UPDATE source_versions SET title='Tampered' WHERE id=:id"), {"id": source_no_url["id"]})
+    with engine.connect() as conn:
+        audit_count = conn.execute(
+            text("SELECT count(*) FROM audit_logs WHERE entity_id=:id"), {"id": pending_rule["id"]}
+        ).scalar()
+        assert audit_count >= 2
+

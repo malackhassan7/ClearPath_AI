@@ -38,11 +38,18 @@ export function ProjectDetail({
   const cs = clearances.filter((c: Clearance) => c.projectId === p.id);
   const ds = documents.filter((d: DocumentRecord) => d.projectId === p.id);
 
-  const capacity = p.capacity_lpd || (p.investmentInrLakhs ? p.investmentInrLakhs * 100 : 2000);
-  const turnoverLakhs = p.annual_turnover ? p.annual_turnover / 100000 : (p.investmentInrLakhs ? p.investmentInrLakhs * 2 : 50);
-  const isCentral = capacity > 50000 || turnoverLakhs > 2000;
-  const isState = !isCentral && (capacity > 500 || turnoverLakhs > 12);
-  const fssaiTier = isCentral ? "Central License" : isState ? "State License" : "Registration (Form A)";
+  const capacity = p.capacity_lpd !== undefined && p.capacity_lpd !== null ? p.capacity_lpd : null;
+  const turnoverLakhs = p.annual_turnover !== undefined && p.annual_turnover !== null ? p.annual_turnover / 100000 : null;
+  const hasKnownMetrics = capacity !== null || turnoverLakhs !== null;
+  const isCentral = (capacity !== null && capacity > 50000) || (turnoverLakhs !== null && turnoverLakhs > 2000);
+  const isState = !isCentral && ((capacity !== null && capacity > 500) || (turnoverLakhs !== null && turnoverLakhs > 12));
+  const fssaiTier = !hasKnownMetrics
+    ? "Unspecified (Pending Capacity/Turnover Data)"
+    : isCentral
+      ? "Central License (Estimated)"
+      : isState
+        ? "State License (Estimated)"
+        : "Registration (Form A) (Estimated)";
   return (
     <>
       <PageHeader
@@ -243,8 +250,12 @@ export function ProjectDetail({
           <div>
             <div className="eyebrow" style={{ color: "var(--teal-primary)" }}>MANDATORY STATUTORY CHECKLIST & TEMPLATES</div>
             <h2 style={{ fontSize: "18px", margin: "4px 0" }}>Statutory Compliance for {p.name}</h2>
+            <div style={{ display: "inline-block", background: "#fef3c7", color: "#92400e", fontSize: "12px", fontWeight: 700, padding: "2px 8px", borderRadius: "4px", margin: "4px 0 8px 0" }}>
+              DEMO REFERENCE ESTIMATE · REGULATORY REVIEW PENDING
+            </div>
             <p style={{ color: "#666", fontSize: "14px", margin: 0 }}>
-              Calculated Tier: <b>{fssaiTier}</b> (Capacity: {capacity.toLocaleString()} LPD). Below are the required statutory documents and downloadable official formats.
+              Calculated Tier: <b>{fssaiTier}</b> {capacity !== null ? `(Capacity: ${capacity.toLocaleString()} LPD)` : "(Capacity not specified)"}.
+              {" "}All official reference rules in the Source Registry are in <code>NEEDS_REVIEW</code> status; this reference estimate is for prototype demonstration and does not constitute statutory legal approval.
             </p>
           </div>
           <Link to={`/projects/${p.id}/documents`} className="btn primary">

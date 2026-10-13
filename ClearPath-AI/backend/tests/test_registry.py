@@ -5,7 +5,7 @@ import pytest
 from fastapi import HTTPException
 from pypdf import PdfWriter
 
-from app.schemas.registry import RuleCreate, ReviewRequest
+from app.schemas.registry import RuleCreate, ReviewRequest, SourceMetadata
 from app.services.registry import parse_pdf, MAX_BYTES
 from conftest import make_user, FakeSession
 
@@ -80,3 +80,43 @@ def test_streaming_chat_does_not_bypass_review_gate(client):
     assert response.status_code == 200
     assert '"sources": []' in response.text
     assert "3,000" not in response.text
+
+
+@pytest.mark.parametrize("invalid_reason", ["", "   ", "short", "123456789"])
+def test_review_reason_validation_rejects_empty_or_short_reason(invalid_reason):
+    """Review rationale is mandatory and must contain substantive evidence (>= 10 chars)."""
+    with pytest.raises(ValueError):
+        ReviewRequest(expected_state="NEEDS_REVIEW", state="VERIFIED", reason=invalid_reason)
+
+
+def test_source_metadata_date_separation_and_unknown_preservation():
+    """Retrieval date, publication date, and effective date are completely separated."""
+    from datetime import date, datetime, timezone, timedelta
+    
+    # 1. When dates are not supplied, they remain None and are not inferred from each other
+    meta = SourceMetadata(title="Test Circular", issuer="FSSAI", provenance_note="Local reference document.")
+    assert meta.retrieved_at is None
+    assert meta.published_on is None
+    assert meta.effective_on is None
+
+    # 2. Each date can be set independently without affecting the others
+    meta_retrieved = SourceMetadata(
+        title="Test Circular", issuer="FSSAI",
+        retrieved_at=datetime(2026, 1, 15, 12, 0, tzinfo=timezone.utc),
+        provenance_note="Retrieved from official portal.",
+    )
+    assert meta_retrieved.retrieved_at == datetime(2026, 1, 15, 12, 0, tzinfo=timezone.utc)
+    assert meta_retrieved.published_on is None
+    assert meta_retrieved.effective_on is None
+
+    # 3. Publication date and effective date are date objects, separate from timestamp
+    meta_pub = SourceMetadata(
+        title="Test Circular", issuer="FSSAI",
+        published_on=date(2025, 6, 1),
+        effective_on=date(2025, 7, 1),
+        provenance_note="Gazette publication record.",
+    )
+    assert meta_pub.retrieved_at is None
+    assert meta_pub.published_on == date(2025, 6, 1)
+    assert meta_pub.effective_on == date(2025, 7, 1)
+

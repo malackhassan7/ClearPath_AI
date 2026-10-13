@@ -54,7 +54,7 @@ describe("ChatbotPage Component", () => {
         answer: "According to verified regulatory sources, units up to 500 LPD require registration.",
         sources: [
           {
-            document_title: "Kind of Business Eligibility",
+            document_title: "[SYNTHETIC TEST FIXTURE] Kind of Business Eligibility",
             page_number: 1,
             source_url: "https://foscos.fssai.gov.in/assets/docs/KindofBusinessEligibility.pdf",
             source_org: "FSSAI",
@@ -73,7 +73,7 @@ describe("ChatbotPage Component", () => {
     await user.click(sendBtn);
 
     await waitFor(() => {
-      expect(screen.getByText(/Kind of Business Eligibility/i)).toBeInTheDocument();
+      expect(screen.getByText(/\[SYNTHETIC TEST FIXTURE\] Kind of Business Eligibility/i)).toBeInTheDocument();
       expect(screen.getByText(/Page 1/i)).toBeInTheDocument();
     });
   });
